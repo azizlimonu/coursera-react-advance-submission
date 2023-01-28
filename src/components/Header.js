@@ -29,7 +29,7 @@ const socials = [
   {
     icon: faStackOverflow,
     url: "https://stackoverflow.com",
-  },
+  }
 ];
 
 const Header = () => {
@@ -44,8 +44,28 @@ const Header = () => {
     }
   };
 
+  const HeaderContainer = useRef();
+
+  useEffect(() => {
+    // initial undefined
+    let prev;
+    const handleScroll = (e) => {
+      const window = e.currentTarget;
+      if (prev > window.scrollY) {
+        HeaderContainer.current.style.transform = "translateY(-0px)";
+      } else if (prev < window.scrollY) {
+        HeaderContainer.current.style.transform = "translateY(-200px)";
+      }
+      prev = window.scrollY;
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+
+  }, []);
+
   return (
     <Box
+      ref={HeaderContainer}
       position="fixed"
       top={0}
       left={0}
@@ -65,10 +85,23 @@ const Header = () => {
         >
           <nav>
             {/* Add social media links based on the `socials` data */}
+            <HStack spacing={8}>
+              {socials?.map((item, index) => (
+                <a href={item.url} key={index}>
+                  <FontAwesomeIcon icon={item.icon} size='2x' />
+                </a>
+              ))}
+            </HStack>
           </nav>
           <nav>
             <HStack spacing={8}>
               {/* Add links to Projects and Contact me section */}
+              <a href='/#projects' onClick={handleClick("projects")}>
+                Projects
+              </a>
+              <a href='/#contact-me' onClick={handleClick("contactme")}>
+                Contact Me
+              </a>
             </HStack>
           </nav>
         </HStack>
